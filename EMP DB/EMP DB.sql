@@ -18,3 +18,4 @@ select* from department;
                              ('E006','Mark','Manager',45000,10),
                              ('E007','Solomon','Teacher',30000,30);
  select * from employee;
+
