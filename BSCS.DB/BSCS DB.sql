@@ -1,8 +1,9 @@
+-- Active: 1738044664712@@localhost@3306@bscs
 -- Active: 1738044664712@@localhost@3306@emp
-use EMP;
+use BSCS;
 Create Table Department(DeptNo int primary key , DName varchar (50), Loc varchar(50));
 desc Department;
- Create table Employee(EmpNo int var primary key, EName varchar(50), Job varchar(50), Salary int, DeptNo int, foreign key(DeptNo) references Department(DeptNo));
+ Create table Employee(EmpNo  varchar(50) primary key, EName varchar(50), Job varchar(50), Salary int, DeptNo int, foreign key(DeptNo) references Department(DeptNo));
  Drop TABLE employee;
  Create table Employee(EmpNo  varchar(50) primary key, EName varchar(50), Job varchar(50), Salary int, DeptNo int, foreign key(DeptNo) references Department(DeptNo));
  desc Employee;
@@ -18,4 +19,5 @@ select* from department;
                              ('E006','Mark','Manager',45000,10),
                              ('E007','Solomon','Teacher',30000,30);
  select * from employee;
+ show DATABASEs;
 
