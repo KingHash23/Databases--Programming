@@ -73,3 +73,5 @@ SELECT * FROM doc_patient WHERE PID LIKE 'P00%';
 
  select d.*,p.* from doctor d LEFT JOIN patient p on d.`DID`= p.`DID` WHERE p.`PID` IS NOT NULL;
 
+show tables;
+create database bscs2;
