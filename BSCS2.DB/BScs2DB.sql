@@ -113,4 +113,72 @@ Show FULL TABLES WHERE Table_type = 'BASE TABLE' OR Table_type = 'VIEW';
  ROLLBACK;
  select* from employee;
 --  The rollback command is executed and it take back the transaction history
+show DATABASES;
+use bscs2;
+select* from department;
+CREATE table Project(
+    projID
+    int primary key AUTO_INCREMENT,
+    ProjName VARCHAR(100) NOT NULL,
+    DeptNo int,
+    Foreign Key (DeptNo) REFERENCES Department(DeptNo)
+);
+DROP TABLE Project;
+CREATE table Project(
+    ProjID
+    int primary key AUTO_INCREMENT,
+    ProjName VARCHAR(100) NOT NULL,
+    DeptNo int,
+    Foreign Key (DeptNo) REFERENCES Department(DeptNo),
+    EmpNo varchar(50),
+    Foreign Key (EmpNo) REFERENCES employee(EmpNo)
+);
 
+--add two columns in the table project AssignedDate and roleand insert the availed values.
+ALTER TABLE project ADD COLUMN AssignedDate DATE;
+ALTER TABLE project ADD COLUMN Role varchar(50);
+DESC project;
+insert into project(ProjName,DeptNo,EmpNo) values ('sales boost', 10, 'E001'),
+                                                   ('marketing expansion', 40, 'E005'),
+                                                   ('accounting automation', 30, 'E007'),
+                                                   ('sales strategy',10, 'E006');
+select* from project;
+
+-- A)Rerieve employee and their department details.
+SELECT E.EmpNo, E.EName, E.Job, E.Salary, D.DName, D.Loc FROM Employee E
+JOIN Department D ON E.DeptNo = D.DeptNo;
+
+-- B) Retrieve the project and their Department details.
+
+SELECT P.projID, P.ProjName, D.DName, D.loc FROM project P 
+JOIN department D ON P.DeptNo = D.DeptNo;
+
+-- C) Retrieve All Employees, their departments, and Projects.
+select E.EmpNo, E.EName,E.Job, E.Salary,D.DName as Department, P.ProjName as Project
+FROM employee E
+JOIN department D ON E.DeptNo = D.DeptNo
+JOIN project P ON D.DeptNo = P.DeptNo;
+
+-- D) retrieve all project along with the department and employees in that department.
+Select P.ProjName AS Project, D.DName as Department, E.EName As Employee, E.Job 
+FROM Project P  join department D on P.DeptNo = D.DeptNo 
+JOIN employee E on D.DeptNo = E.DeptNo ORDER BY P.ProjName;
+
+-- E) Find Employees working on projects in their Department with salary Greater than 40000.
+SELECT E.EmpNo, E.EName, E.Job, E.Salary, D.DName as Department , P.ProjName as Project
+FROM employee E join department D on E.DeptNo = D.DeptNo
+JOIN project P on D.DeptNo = P.DeptNo where E.Salary> 40000;
+
+-- F) Count How Many Employees are in each department working on a project.
+Select D.DName AS Department, P.ProjName AS Project, COUNT(E.EmpNo) AS
+TotalEmployees FROM employee E JOIN department D ON E.DeptNo = D.DeptNo
+JOIN project P ON D.DeptNo = P.DeptNo GROUP BY D.DName, P.ProjName;
+
+--  G)Retreive employees who are maangers and their Department's project
+Select E.EmpNo, E.EName,E.Job,D.DName AS Department, P.ProjName AS Project
+FROM employee E 
+JOIN department D on E.DeptNo = D.DeptNo
+JOIN project P on D.DeptNo = P.DeptNo WHERE E.Job = 'Manager';
+
+-- update employee salary
+update employee  set Salary = 45000 WHERE EmpNo = 'E003';
