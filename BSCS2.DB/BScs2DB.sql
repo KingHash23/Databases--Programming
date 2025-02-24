@@ -244,7 +244,14 @@ ALTER TABLE empy ADD CONSTRAINT empy_Phone UNIQUE(Phone);
  --  Create a new constraint to ensure that the salary is not negative.
  ALTER TABLE empy ADD CONSTRAINT empy_salary CHECK (Salary >= 0);
 
- 
+ insert into empy values (
+    'E001', '20', 'M', 'ODONGKARA','OSCAR', '20000','0771301999','oscar@gmail.com', '2025-02-24'
+);
+insert into empy values (
+    'E002', '22', 'M', 'OBBA','MARK', '40000','0789109404','obba@gmail.com', '2025-02-24'
+);
+ALTER Table empy drop constraint empy_phone;
+select * FROM empy;
 
 
  
