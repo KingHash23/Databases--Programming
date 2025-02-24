@@ -182,3 +182,69 @@ JOIN project P on D.DeptNo = P.DeptNo WHERE E.Job = 'Manager';
 
 -- update employee salary
 update employee  set Salary = 45000 WHERE EmpNo = 'E003';
+
+create TABLE EMPX(eid VARCHAR(20), constraint empx_pk PRIMARY KEY (eid),
+designation varchar(20) constraint empx_des check (designation in ('manager', 'clerk','teacher')),
+Age int constraint empx_age check (Age>18),DOJ datetime DEFAULT CURRENT_TIMESTAMP, 
+Gender varchar(1), Email varchar(20), telno int);
+ desc empx;
+  ALTER TABLE empx ADD CONSTRAINT empx_Gender check (Gender in ('M','F'));
+  ALTER TABLE empx DROP CONSTRAINT empx_Gender;
+  ALTER Table empx ADD CONSTRAINT empx_Gender check (Gender = 'M' or Gender = 'F');
+--   emails should be unique/distict.
+  ALTER TABLE empx ADD CONSTRAINT empx_email UNIQUE (email);
+
+--    telno should be of 10 digits.
+  ALTER TABLE empx ADD CONSTRAINT empx_telno check (length(telno)=10);
+  insert INTO empx (eid, designation,Age,Gender,Email, telno)VALUES ('E001', 'manager', 34, 'M', 'Obba@gmail.com',1798109404);
+   SELECT*FROM empx; 
+select CONSTRAINT_NAME, CONSTRAINT_type FROM information_schema.TABLE_CONSTRAINTS WHERE TABLE_NAME= 'empx';
+-- create table empy 
+--  EID nimber should have four aphanumeric values.
+-- Age should be greater than 18 - 60
+-- LName should be in Capital letters.
+-- salary should be  in the range of 40000 and 100000
+-- Phone number should be distinct
+-- All emails must have an @ symbol
+-- Gender should not be empty or left blank.
+-- All the EIDS must start with with letter E
+-- 
+
+-- CREATE TABLE EMPY(Eid VARCHAR(4) CONSTRAINT empy_pk primary key,
+-- Age int constraint empy_age check (age >=18 And age <= 60),
+-- Gender VARCHAR(1) NOT NULL constraint empy_gender check (gender = 'M' or gender = 'F'),
+-- LName VARCHAR(255)  constraint empy_LName check (LName = UPPER(LName)),
+-- DName VARCHAR(255) ,
+-- Salary DECIMAL(10,2) constraint empy_salary check (salary >= 40000 and salary <= 100000),
+-- Phone VARCHAR(10) constraint empy_phone UNIQUE(Phone) ,
+--  Email VARCHAR(255) constraint empy_email check (email LIKE '%@%' ),
+--  DOJ DATE DEFAULT CURRENT_TIMESTAMP);
+
+CREATE TABLE EMPY (
+    eid VARCHAR(4) PRIMARY KEY,
+    Age INT CONSTRAINT empy_age CHECK (age >= 18 AND age <= 60),
+    Gender VARCHAR(1) NOT NULL CONSTRAINT empy_gender CHECK (gender IN ('M', 'F')),
+    LName VARCHAR(255) CONSTRAINT empy_LName CHECK (LNAME = UPPER(LNAME)),
+    DName VARCHAR(255),
+    Salary DECIMAL(10,2) CONSTRAINT empy_salary CHECK (salary BETWEEN 40000 AND 100000),
+    Phone VARCHAR(10),
+    Email VARCHAR(255) CONSTRAINT empy_email CHECK (email LIKE '%@%'),
+    DOJ DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+ALTER table empy ADD CONSTRAINT empy_eid check (length (eid)=4);
+
+ALTER TABLE empy ADD CONSTRAINT empy_Phone UNIQUE(Phone);
+
+-- all EID's must start with letter E.
+ ALTER TABLE empy ADD CONSTRAINT empy_eid_start CHECK (eid LIKE 'E%');
+
+--  Eliminate the constraint appended on V  to accommodate for any salary values.
+ ALTER TABLE empy DROP CONSTRAINT empy_salary;
+ 
+ --  Create a new constraint to ensure that the salary is not negative.
+ ALTER TABLE empy ADD CONSTRAINT empy_salary CHECK (Salary >= 0);
+
+ 
+
+
+ 
