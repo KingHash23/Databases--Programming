@@ -383,6 +383,30 @@ JOIN orders o ON d.deliveryid = o.deliveryid
 GROUP BY d.drivername
 ORDER BY total_deliveries DESC;
 
+
+--VIEW FOR ORDERS DELIVERED AND THE AMOUNT OF MONEY PAID
+--View shows the total amount of money paid for orders delivered
+CREATE VIEW delivered_orders AS
+SELECT c.cname, SUM(o.totalamount) AS total_amount
+FROM customers c
+JOIN orders o ON c.cid = o.cid
+WHERE o.orderstatus = 'Delivered'
+GROUP BY c.cname
+HAVING SUM(o.totalamount) > 20000;
+SELECt * FROM delivered_orders;
+
+--VIEW FOR WHICH NUMBER OF PRODUCTS IN EACH CATEGORY
+--View shows the number of products in each category
+CREATE VIEW products_per_category AS
+SELECT c.categoryname, COUNT(p.productid) AS number_of_products
+FROM categories c 
+JOIN products p ON c.categoryid = p.categoryid
+GROUP BY c.categoryname
+ORDER BY number_of_products;
+
+SELECT* from products_per_category;
+
+
 --SELECTING ORDERS WHOSE PAYMENT STATUS IS PENDING
 SELECT * FROM orders WHERE paymentstatus = 'Pending';
 
@@ -421,6 +445,22 @@ ROLLBACK;
 
 
 
+select * FROM customers;
+-- alter Table customers drop  constraint chk_email ;
+  
+--  show all the constaints in the cutomer table.
+
+select * from information_schema.table_constraints
+where table_name = 'customers';
+
+
+
+
+
+--   add a new 'column in table cutomer and it should btn gender and email.
+alter table customers ADD COLUMN Residency varchar(20) after gender;
+
+desc customers 
 
 
 
