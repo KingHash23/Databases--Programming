@@ -180,7 +180,7 @@ FROM employee E
 JOIN department D on E.DeptNo = D.DeptNo
 JOIN project P on D.DeptNo = P.DeptNo WHERE E.Job = 'Manager';
 
--- update employee salary
+-- update employee salar
 update employee  set Salary = 45000 WHERE EmpNo = 'E003';
 
 create TABLE EMPX(eid VARCHAR(20), constraint empx_pk PRIMARY KEY (eid),
@@ -254,4 +254,87 @@ ALTER Table empy drop constraint empy_phone;
 select * FROM empy;
 
 
- 
+delimiter /
+ create Procedure teacher()
+begin
+select*from employee where job = 'Teacher';
+ end /
+
+call teacher()/
+
+CREATE Procedure joptype1(in id1 varchar(50))
+begin
+select*from employee where job = id1;
+end/
+call joptype1('Manager')/
+
+select*from employee/
+
+
+
+-- procedure that will get the total amount of a particular jobtile from employee.
+CREATE PROCEDURE amount_spent(IN id2 VARCHAR(50))
+BEGIN
+    SELECT SUM(salary) FROM employee WHERE
+    job = id2;
+END /
+
+CALL amount_spent('Manager');
+
+
+
+
+--  produce 
+create PROCEDURE xyt(IN id3 VARCHAR(50), in id4 varchar(10))
+begin
+SELECT count(*) FROM employee where job = id3 and DeptNo = id4;
+end/
+call xyt('Manager','30')/
+
+
+
+-- procedure that updates the employee
+create Procedure update_pro(in id4 varchar(20), in id5 int )
+begin
+    UPDATE employee SET salary = id5 WHERE EmpNo = id4;
+
+END /
+
+CALL update_pro('E003', 50000)/
+select* from employee/
+
+
+
+-- procedure that insert row into employee.
+create Procedure insert_data(in id6 varchar(10), in id7 varchar(10), in id8 varchar(10), in id9 varchar(10))
+begin
+insert into department values(id6, id7, id8, id9);
+end;
+
+call insert_data(20,'IT','KAMPALA','Kissai');
+call insert_data(50,'SALES','KAMPALA','BukotoL');
+call insert_data(60,'SALES','KAMPALA','Nitnda');
+SELECT* FROM department;
+-- how to show all the procedures
+SHOW  procedures;
+
+
+
+-- to be done in the cmdline command prompt
+-- creating a new user.
+CREATE USER 'calvin'@'localhost' IDENTIFIED BY 'calo';
+
+-- changing the password
+ALTER USER 'calvin'@'localhost' PASSWORD EXPIRE;
+
+-- lock access
+ALTER USER 'calvin'@'localhost' account lock;
+
+-- unlock our account
+
+ALTER USER 'calvin'@'localhost' account unlock;
+
+-- granting privileges
+
+
+
