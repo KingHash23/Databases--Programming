@@ -34,6 +34,8 @@ select * FROM donation;
     END /
     call Procedure2('CT')/
 
+
+
 --  3. Procedure3 
     CREATE PROCEDURE Procedure3()
     BEGIN
