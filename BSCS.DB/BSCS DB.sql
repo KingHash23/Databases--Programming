@@ -75,3 +75,4 @@ SELECT * FROM doc_patient WHERE PID LIKE 'P00%';
 
 show tables;
 create database bscs2;
+--  create a table blolkien.

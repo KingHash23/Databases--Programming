@@ -180,7 +180,8 @@ FROM employee E
 JOIN department D on E.DeptNo = D.DeptNo
 JOIN project P on D.DeptNo = P.DeptNo WHERE E.Job = 'Manager';
 
--- update employee salar
+-- update employee salary.
+
 update employee  set Salary = 45000 WHERE EmpNo = 'E003';
 
 create TABLE EMPX(eid VARCHAR(20), constraint empx_pk PRIMARY KEY (eid),
