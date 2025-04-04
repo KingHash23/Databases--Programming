@@ -133,6 +133,7 @@ CREATE table Project(
     EmpNo varchar(50),
     Foreign Key (EmpNo) REFERENCES employee(EmpNo)
 );
+desc project;
 
 --add two columns in the table project AssignedDate and roleand insert the availed values.
 ALTER TABLE project ADD COLUMN AssignedDate DATE;
@@ -188,6 +189,7 @@ create TABLE EMPX(eid VARCHAR(20), constraint empx_pk PRIMARY KEY (eid),
 designation varchar(20) constraint empx_des check (designation in ('manager', 'clerk','teacher')),
 Age int constraint empx_age check (Age>18),DOJ datetime DEFAULT CURRENT_TIMESTAMP, 
 Gender varchar(1), Email varchar(20), telno int);
+use bscs2;
  desc empx;
   ALTER TABLE empx ADD CONSTRAINT empx_Gender check (Gender in ('M','F'));
   ALTER TABLE empx DROP CONSTRAINT empx_Gender;

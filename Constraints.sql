@@ -1,4 +1,4 @@
-
+use bscs2;
 CREATE Table empx (EID VARCHAR(10),
 constraint empx_pk PRIMARY KEY(EID),
 designation VARCHAR(20)
