@@ -5,7 +5,7 @@ USE Special_Needs_Education_dbsystem;
 
 -- Create Teacher table
 CREATE TABLE Teacher (
-    TID VARCHAR(10) PRIMARY KEY
+    TID VARCHAR(10) PRIMARY KEY,
     CONSTRAINT chk_teacherID CHECK (TID LIKE 'T%'),
     TName VARCHAR(100) NOT NULL,
     T_Gender VARCHAR(1) NOT NULL
@@ -59,12 +59,10 @@ CREATE TABLE Student (
 );
 Desc student;
 
---  modify table student and  a FOREIGN KEY (PID) REFERENCES Learning_plan(PID).
+
 ALTER TABLE Student
 ADD CONSTRAINT fk_student_learning_plan
 FOREIGN KEY (PID) REFERENCES Learning_plan(PID);
-
-Alter table student DROP CONSTRAINT fk_student_learning_plan;
 
 
 
@@ -72,16 +70,12 @@ Alter table student DROP CONSTRAINT fk_student_learning_plan;
 CREATE TABLE Subjects (
     SubID VARCHAR(10) PRIMARY KEY,
      CONSTRAINT chk_subjectID CHECK (SubID LIKE 'S%'),
-    SubjectName VARCHAR(100) NOT NULL UNIQUE,
+    SubjectName VARCHAR(100) NOT NULL,
     description VARCHAR(50) NOT NULL,
     TID VARCHAR(10) NOT NULL,
     FOREIGN KEY (TID) REFERENCES Teacher(TID)
 );
 Desc subjects;
--- alter the table subject and drop the constrain unique on column subjectName.
-
-ALTER TABLE Subjects
-DROP INDEX SubjectName;
 
 
 
@@ -101,11 +95,14 @@ CREATE TABLE Learning_plan (
     FOREIGN KEY (SubID) REFERENCES Subjects(SubID)
 );
 Desc  learning_plan;
+
+
+
 -- Create Assessment table
 CREATE TABLE Assessment (
     AID VARCHAR(10) PRIMARY KEY
     CONSTRAINT chk_assessmentID CHECK (AID LIKE 'A%'),
-    Grade VARCHAR(2) NOT NULL
+    Grade VARCHAR(2) NOT NULL,
     CONSTRAINT chk_grade CHECK (Grade IN ('A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'F')),
     Remark TEXT,
     DateTaken DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -289,3 +286,174 @@ INSERT INTO Assessment (AID, Grade, Remark, DateTaken, StID, TID, SubID) VALUES
 select* from assessment;
 
 
+
+-- Assessment Logs:
+CREATE TABLE Assessment_Log (
+    LID INT(10)  AUTO_INCREMENT PRIMARY KEY,
+    AID VARCHAR(10) NOT NULL,
+    StID VARCHAR(10) NOT NULL,
+    TID VARCHAR(10) NOT NULL,
+    SubID VARCHAR(10) NOT NULL,
+    ActionType VARCHAR(50) NOT NULL
+    constraint chk_assessment_actiontype check (ActionType in ('INSERT', 'UPDATE', 'DELETE')),
+    ActionTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PerformedBy VARCHAR(100) NOT NULL,  -- Stores who made the changes
+    FOREIGN KEY (AID) REFERENCES Assessment(AID) ON DELETE CASCADE,
+    FOREIGN KEY (StID) REFERENCES Student(StID),
+    FOREIGN KEY (TID) REFERENCES Teacher(TID),
+    FOREIGN KEY (SubID) REFERENCES Subjects(SubID)
+);
+Drop TABLE assessment_log;
+
+
+-- Trigger for the Assessment_Log
+DELIMITER //
+
+CREATE TRIGGER trg_assessment_log
+AFTER INSERT ON Assessment
+FOR EACH ROW
+BEGIN
+    INSERT INTO Assessment_Log (AID, StID, TID, SubID, ActionType, PerformedBy)
+    VALUES (NEW.AID, NEW.StID, NEW.TID, NEW.SubID, 'INSERT', USER());
+END;
+//
+
+DELIMITER ;
+--  Testing the above trigger.
+INSERT INTO Assessment (AID, Grade, Remark, DateTaken, StID, TID, SubID) VALUES
+    ('A022', 'A', 'Needs more practice', '2025-02-21 11:00:00', 'S020','T005','Sub005');
+
+
+DELIMITER //
+CREATE TRIGGER trg_assessment_update
+AFTER UPDATE ON Assessment
+FOR EACH ROW
+BEGIN
+    INSERT INTO Assessment_Log (AID, StID, TID, SubID, ActionType, PerformedBy)
+    VALUES (NEW.AID, NEW.StID, NEW.TID, NEW.SubID, 'UPDATE', USER());
+END;
+//
+DELIMITER ;
+
+-- Testing the above trigger trg_assessment_update .
+UPDATE Assessment SET Grade = 'A+' WHERE AID = 'A023';
+    
+
+
+CREATE TRIGGER trg_assessment_delete
+AFTER DELETE ON Assessment
+FOR EACH ROW
+BEGIN
+    INSERT INTO Assessment_Log (AID, StID, TID, SubID, ActionType, PerformedBy)
+    VALUES (OLD.AID, OLD.StID, OLD.TID, OLD.SubID, 'DELETE', USER());
+END;
+//
+
+DELIMITER ;
+-- Testing the above trigger trg_assessment_delete .
+ DELETE FROM Assessment WHERE AID = 'A023';
+
+
+
+
+
+-- Before triggers.
+-- Ensure Teacher's Email Domain is Institutional.
+
+DELIMITER //
+
+CREATE TRIGGER before_teacher_insert
+BEFORE INSERT ON Teacher
+FOR EACH ROW
+BEGIN
+    IF NEW.WorkEmail NOT LIKE '%@iac.ac' THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Teacher email must be an institutional email (@school.edu)';
+    END IF;
+END;
+//
+
+DELIMITER ;
+-- testing
+INSERT INTO Teacher (TID, TName, T_Gender, Specialization, PhoneNo, WorkEmail) VALUES 
+    ('T016', 'Atomic alvin', 'M', 'visual impairment', '0789109404', 'alvin@iac.ac');
+
+INSERT INTO Teacher (TID, TName, T_Gender, Specialization, PhoneNo, WorkEmail) VALUES 
+    ('T017', 'Atomixs alvin', 'M', 'hearing impairment', '0789109489', 'atomixs@gmail.ac');
+
+
+
+
+
+
+-- 3. Validate Phone Number Format (Guardians)
+
+DELIMITER //
+
+CREATE TRIGGER before_teacher_phone_insert
+BEFORE INSERT ON Teacher
+FOR EACH ROW
+BEGIN
+    IF NEW.PhoneNo NOT REGEXP '^[0-9]{10}$' THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Invalid phone number! Must be exactly 10 digits.';
+    END IF;
+END;
+//
+DELIMITER ;
+INSERT INTO Teacher (TID, TName, T_Gender, Specialization, PhoneNo, WorkEmail) VALUES 
+    ('T018', 'Kakembo alvin', 'M', 'intellectual impairment', '078910948', 'kakembo@iac.ac');
+
+
+-- Views
+-- 1 Shows each student with their learning plan name, subject, and teacher assigned. (inner join)
+CREATE VIEW Student_Learning_Overview AS
+SELECT s.StID,s.StName,lp.P_Name AS LearningPlan,sub.SubjectName,t.TName AS Teacher
+FROM Student s
+JOIN Learning_plan lp ON s.PID = lp.PID
+JOIN Subjects sub ON lp.SubID = sub.SubID
+JOIN Teacher t ON lp.TID = t.TID;
+SELECT * FROM Student_Learning_Overview;
+
+-- 2 Show each teacher with their assigned subjects and their number of students assigned. (inner join)
+CREATE VIEW Teacher_Assigned_Subjects AS
+CREATE VIEW Assessment_Summary AS
+SELECT a.AID,s.StName,sub.SubjectName,a.Grade,a.DateTaken
+FROM Assessment a
+JOIN Student s ON a.StID = s.StID
+JOIN Subjects sub ON a.SubID = sub.SubID;
+SELECT * FROM Assessment_Summary;
+
+-- 3. Shows requests made by students and their current approval status. (inner join)
+CREATE VIEW Accessibility_Status AS
+SELECT ar.RID,s.StName,ar.RequestType,ar.RequestStatus,ar.SubmissionDate
+FROM Accessibility_Request ar
+JOIN Student s ON ar.StID = s.StID;
+select * from accessibility_status;
+
+-- 4. Shows the number of students assigned to each teacher. (left join)
+CREATE VIEW Teacher_Student_Count AS
+SELECT t.TID,t.TName,t.Specialization,COUNT(s.StID) AS NumberOfStudents
+FROM Teacher t
+LEFT JOIN Student s ON s.TID = t.TID
+GROUP BY t.TID, t.TName, t.Specialization;
+SELECT * FROM teacher_student_count;
+
+-- 5 Lists students along with their guardian names and contact info in case of an emergency. (inner join)
+CREATE VIEW Student_Guardian_Contact AS
+SELECT s.StName,g.GF_Name,g.GL_Name,g.PhoneNo,g.Email,g.Relationship
+FROM Student s
+JOIN Guardian g ON s.GID = g.GID;
+select * FROM student_guardian_contact;
+
+-- 6. Students with their assessments
+CREATE VIEW Student_Assessment_FullView AS
+SELECT s.StID, s.StName, a.AID, a.Grade, a.DateTaken
+FROM Student s LEFT JOIN Assessment a ON s.StID = a.StID
+UNION
+SELECT s.StID, s.StName, a.AID, a.Grade, a.DateTaken
+FROM Assessment a RIGHT JOIN Student s ON s.StID = a.StID;
+select * from student_assessment_fullview;
+
+
+drop database Special_Needs_Education_dbsystem; 

@@ -170,7 +170,7 @@ VALUES
 
 INSERT INTO candidates (candidate_name, position, candidate_contact_number)
 VALUES
-    ('Michael', 'President', '0782278976'),
+    (001,'Michael', 'President', '0782278976'),
     ('Emily', 'Resident_MP', '0780937654'),
     ('Patience', 'Resident_MP', '0780903654'),
     ('Josheph etana', 'Resident_MP', '0780937654'),
