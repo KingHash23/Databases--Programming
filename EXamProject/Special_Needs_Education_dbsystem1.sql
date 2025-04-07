@@ -52,7 +52,6 @@ CREATE TABLE Student (
     CONSTRAINT chk_student_disability CHECK (Disability_Type IN ('visual impairment','hearing impairment','intellectual impairment','Autism','Dyslexia')),
     GID VARCHAR(10) NOT NULL,
     TID VARCHAR(10) NOT NULL,
-    PID VARCHAR(10),
     FOREIGN KEY (GID) REFERENCES Guardian(GID),
     FOREIGN KEY (TID) REFERENCES Teacher(TID)
    
@@ -132,6 +131,73 @@ CREATE TABLE Accessibility_Request (
 );
 Desc accessibility_request;
 
+-- Logs
+
+-- Assessment Logs:
+CREATE TABLE Assessment_Log (
+    LID INT(10)  AUTO_INCREMENT PRIMARY KEY,
+    AID VARCHAR(10) NOT NULL,
+    StID VARCHAR(10) NOT NULL,
+    TID VARCHAR(10) NOT NULL,
+    SubID VARCHAR(10) NOT NULL,
+    ActionType VARCHAR(50) NOT NULL
+    constraint chk_assessment_actiontype check (ActionType in ('INSERT', 'UPDATE', 'DELETE')),
+    ActionTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PerformedBy VARCHAR(100) NOT NULL,  -- Stores who made the changes
+    FOREIGN KEY (AID) REFERENCES Assessment(AID) ON DELETE CASCADE,
+    FOREIGN KEY (StID) REFERENCES Student(StID),
+    FOREIGN KEY (TID) REFERENCES Teacher(TID),
+    FOREIGN KEY (SubID) REFERENCES Subjects(SubID)
+);
+
+
+-- Trigger for the Assessment_Log
+DELIMITER //
+
+CREATE TRIGGER trg_assessment_log
+AFTER INSERT ON Assessment
+FOR EACH ROW
+BEGIN
+    INSERT INTO Assessment_Log (AID, StID, TID, SubID, ActionType, PerformedBy)
+    VALUES (NEW.AID, NEW.StID, NEW.TID, NEW.SubID, 'INSERT', USER());
+END;
+//
+
+DELIMITER ;
+--  Testing the above trigger.
+INSERT INTO Assessment (AID, Grade, Remark, DateTaken, StID, TID, SubID) VALUES
+    ('A022', 'A', 'Needs more practice', '2025-02-21 11:00:00', 'S020','T005','Sub005');
+
+
+DELIMITER //
+CREATE TRIGGER trg_assessment_update
+AFTER UPDATE ON Assessment
+FOR EACH ROW
+BEGIN
+    INSERT INTO Assessment_Log (AID, StID, TID, SubID, ActionType, PerformedBy)
+    VALUES (NEW.AID, NEW.StID, NEW.TID, NEW.SubID, 'UPDATE', USER());
+END;
+//
+DELIMITER ;
+
+-- Testing the above trigger trg_assessment_update .
+UPDATE Assessment SET Grade = 'A+' WHERE AID = 'A023';
+    
+
+
+CREATE TRIGGER trg_assessment_delete
+AFTER DELETE ON Assessment
+FOR EACH ROW
+BEGIN
+    INSERT INTO Assessment_Log (AID, StID, TID, SubID, ActionType, PerformedBy)
+    VALUES (OLD.AID, OLD.StID, OLD.TID, OLD.SubID, 'DELETE', USER());
+END;
+//
+
+DELIMITER ;
+-- Testing the above trigger trg_assessment_delete .
+ DELETE FROM Assessment WHERE AID = 'A023';
+
 
 --  inserting data
 -- Teacher Table
@@ -174,27 +240,27 @@ INSERT INTO Guardian (GID, GF_Name, GL_Name, PhoneNo, Email, Relationship) VALUE
     select*FROM guardian;
 
 -- students
-INSERT INTO Student (StID, StName, DOB, St_Gender, Disability_Type, GID, TID, PID) VALUES
-    ('S001', 'Najuma Topista', '2010-05-15', 'F', 'visual impairment', 'G001', 'T001', 'P001'),
-    ('S002', 'Mutebi Jonna', '2011-08-20', 'M', 'hearing impairment', 'G002', 'T002', 'P002'),
-    ('S003', 'Appofia Stella', '2012-03-10', 'F', 'intellectual impairment', 'G003', 'T003', 'P003'),
-    ('S004', 'Lukwago Fahad', '2010-11-25', 'M', 'Autism', 'G004', 'T004', 'P004'),
-    ('S005', 'Namara Daniella', '2013-07-30', 'F', 'Dyslexia', 'G005', 'T005', 'P005'),
-    ('S006', 'Ssonko Anorld', '2011-01-12', 'M', 'visual impairment', 'G006', 'T006', 'P006'),
-    ('S007', 'Olivia Davis', '2012-09-05', 'F', 'hearing impairment', 'G007', 'T007', 'P007'),
-    ('S008', 'Sselemba Horris', '2010-04-18', 'M', 'intellectual impairment', 'G008', 'T008', 'P008'),
-    ('S009', 'Laker Petra', '2013-02-22', 'F', 'Autism', 'G009', 'T009', 'P009'),
-    ('S010', 'Ochen Joshua', '2011-06-14', 'M', 'Dyslexia', 'G010', 'T010', 'P010'),
-    ('S011', 'Zinda Zahara', '2012-12-01', 'F', 'visual impairment', 'G011', 'T011', 'P011'),
-    ('S012', 'Onen Andrew', '2010-10-08', 'M', 'hearing impairment', 'G012', 'T012', 'P012'),
-    ('S013', 'Akuma Lisa', '2013-03-17', 'F', 'intellectual impairment', 'G013', 'T013', 'P013'),
-    ('S014', 'Odongo Frank', '2011-07-29', 'M', 'Autism', 'G014', 'T014', 'P014'),
-    ('S015', 'Stella Mary', '2012-05-23', 'F', 'Dyslexia', 'G015', 'T015', 'P015'),
-    ('S016', 'Musa Olivia', '2010-01-15', 'F', 'Dyslexia', 'G001','T005','P005'),
-    ('S017', 'Chukwuka Omolo', '2011-05-20', 'M', 'hearing impairment', 'G012','T007','P007'),
-    ('S018', 'Felicia Nadia', '2012-09-10', 'F', 'intellectual impairment', 'G010','T008','P008'),
-    ('S019', 'Kamau Kemba', '2010-04-25', 'M', 'Autism', 'G001','T014','P014'),
-    ('S020', 'Somu Amara', '2013-02-28', 'F', 'Dyslexia', 'G001','T005','P005');
+INSERT INTO Student (StID, StName, DOB, St_Gender, Disability_Type, GID, TID) VALUES
+    ('S001', 'Najuma Topista', '2010-05-15', 'F', 'visual impairment', 'G001', 'T001'),
+    ('S002', 'Mutebi Jonna', '2011-08-20', 'M', 'hearing impairment', 'G002', 'T002'),
+    ('S003', 'Appofia Stella', '2012-03-10', 'F', 'intellectual impairment', 'G003', 'T003'),
+    ('S004', 'Lukwago Fahad', '2010-11-25', 'M', 'Autism', 'G004', 'T004'),
+    ('S005', 'Namara Daniella', '2013-07-30', 'F', 'Dyslexia', 'G005', 'T005'),
+    ('S006', 'Ssonko Anorld', '2011-01-12', 'M', 'visual impairment', 'G006', 'T006'),
+    ('S007', 'Olivia Davis', '2012-09-05', 'F', 'hearing impairment', 'G007', 'T007'),
+    ('S008', 'Sselemba Horris', '2010-04-18', 'M', 'intellectual impairment', 'G008', 'T008'),
+    ('S009', 'Laker Petra', '2013-02-22', 'F', 'Autism', 'G009', 'T009'),
+    ('S010', 'Ochen Joshua', '2011-06-14', 'M', 'Dyslexia', 'G010', 'T010'),
+    ('S011', 'Zinda Zahara', '2012-12-01', 'F', 'visual impairment', 'G011', 'T011'),
+    ('S012', 'Onen Andrew', '2010-10-08', 'M', 'hearing impairment', 'G012', 'T012'),
+    ('S013', 'Akuma Lisa', '2013-03-17', 'F', 'intellectual impairment', 'G013', 'T013'),
+    ('S014', 'Odongo Frank', '2011-07-29', 'M', 'Autism', 'G014', 'T014'),
+    ('S015', 'Stella Mary', '2012-05-23', 'F', 'Dyslexia', 'G015', 'T015'),
+    ('S016', 'Musa Olivia', '2010-01-15', 'F', 'Dyslexia', 'G001','T005'),
+    ('S017', 'Chukwuka Omolo', '2011-05-20', 'M', 'hearing impairment', 'G012','T007'),
+    ('S018', 'Felicia Nadia', '2012-09-10', 'F', 'intellectual impairment', 'G010','T008'),
+    ('S019', 'Kamau Kemba', '2010-04-25', 'M', 'Autism', 'G001','T014'),
+    ('S020', 'Somu Amara', '2013-02-28', 'F', 'Dyslexia', 'G001','T005');
     select*FROM student;
 
 
@@ -287,71 +353,7 @@ select* from assessment;
 
 
 
--- Assessment Logs:
-CREATE TABLE Assessment_Log (
-    LID INT(10)  AUTO_INCREMENT PRIMARY KEY,
-    AID VARCHAR(10) NOT NULL,
-    StID VARCHAR(10) NOT NULL,
-    TID VARCHAR(10) NOT NULL,
-    SubID VARCHAR(10) NOT NULL,
-    ActionType VARCHAR(50) NOT NULL
-    constraint chk_assessment_actiontype check (ActionType in ('INSERT', 'UPDATE', 'DELETE')),
-    ActionTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PerformedBy VARCHAR(100) NOT NULL,  -- Stores who made the changes
-    FOREIGN KEY (AID) REFERENCES Assessment(AID) ON DELETE CASCADE,
-    FOREIGN KEY (StID) REFERENCES Student(StID),
-    FOREIGN KEY (TID) REFERENCES Teacher(TID),
-    FOREIGN KEY (SubID) REFERENCES Subjects(SubID)
-);
 Drop TABLE assessment_log;
-
-
--- Trigger for the Assessment_Log
-DELIMITER //
-
-CREATE TRIGGER trg_assessment_log
-AFTER INSERT ON Assessment
-FOR EACH ROW
-BEGIN
-    INSERT INTO Assessment_Log (AID, StID, TID, SubID, ActionType, PerformedBy)
-    VALUES (NEW.AID, NEW.StID, NEW.TID, NEW.SubID, 'INSERT', USER());
-END;
-//
-
-DELIMITER ;
---  Testing the above trigger.
-INSERT INTO Assessment (AID, Grade, Remark, DateTaken, StID, TID, SubID) VALUES
-    ('A022', 'A', 'Needs more practice', '2025-02-21 11:00:00', 'S020','T005','Sub005');
-
-
-DELIMITER //
-CREATE TRIGGER trg_assessment_update
-AFTER UPDATE ON Assessment
-FOR EACH ROW
-BEGIN
-    INSERT INTO Assessment_Log (AID, StID, TID, SubID, ActionType, PerformedBy)
-    VALUES (NEW.AID, NEW.StID, NEW.TID, NEW.SubID, 'UPDATE', USER());
-END;
-//
-DELIMITER ;
-
--- Testing the above trigger trg_assessment_update .
-UPDATE Assessment SET Grade = 'A+' WHERE AID = 'A023';
-    
-
-
-CREATE TRIGGER trg_assessment_delete
-AFTER DELETE ON Assessment
-FOR EACH ROW
-BEGIN
-    INSERT INTO Assessment_Log (AID, StID, TID, SubID, ActionType, PerformedBy)
-    VALUES (OLD.AID, OLD.StID, OLD.TID, OLD.SubID, 'DELETE', USER());
-END;
-//
-
-DELIMITER ;
--- Testing the above trigger trg_assessment_delete .
- DELETE FROM Assessment WHERE AID = 'A023';
 
 
 
