@@ -8,7 +8,7 @@ CREATE TABLE Teacher (
     TID VARCHAR(10) PRIMARY KEY,
     CONSTRAINT chk_teacherID CHECK (TID LIKE 'T%'),
     TName VARCHAR(100) NOT NULL,
-    T_Gender VARCHAR(1) NOT NULL
+    T_Gender VARCHAR(1) NOT NULL,
     Constraint chk_teacher_Gender check(T_Gender ='M' or T_Gender ='F'),
     Specialization VARCHAR(100) NOT NULL,
     constraint chk_teacher_specs check (Specialization in ('visual impairment','hearing impairment','intellectual impairment','Autism','Dyslexia')),
@@ -27,7 +27,7 @@ CREATE TABLE Guardian (
     GL_Name VARCHAR(50) NOT NULL,
     PhoneNo VARCHAR(10) NOT NULL UNIQUE,
     Email VARCHAR(100) NOT NULL UNIQUE,
-    Relationship VARCHAR(50) NOT NULL
+    Relationship VARCHAR(50) NOT NULL,
     CONSTRAINT chk_guardian_relationship CHECK (Relationship IN ('Parent','Sibling','other')),
     CONSTRAINT chk_guardian_phone CHECK (PhoneNo REGEXP '^[0-9]{10}$'),
     CONSTRAINT chk_guardian_email CHECK (Email REGEXP '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$')
@@ -41,9 +41,9 @@ CREATE TABLE Student (
     CONSTRAINT chk_studentID CHECK (StID LIKE 'S%'),
     StName VARCHAR(100) NOT NULL,
     DOB DATE NOT NULL,
-    St_Gender VARCHAR(1) NOT NULL
+    St_Gender VARCHAR(1) NOT NULL,
     Constraint chk_student_gender CHECK (St_Gender ='M' or St_Gender ='F'),
-    Disability_Type VARCHAR(100) NOT NULL
+    Disability_Type VARCHAR(100) NOT NULL,
     CONSTRAINT chk_student_disability CHECK (Disability_Type IN ('visual impairment','hearing impairment','intellectual impairment','Autism','Dyslexia')),
     GID VARCHAR(10) NOT NULL,
     TID VARCHAR(10) NOT NULL,
@@ -70,7 +70,7 @@ Desc subjects;
 
 -- Create Learning_plan table
 CREATE TABLE Learning_plan (
-    PID VARCHAR(10) PRIMARY KEY
+    PID VARCHAR(10) PRIMARY KEY,
     CONSTRAINT chk_planID CHECK (PID LIKE 'P%'),
     P_Name VARCHAR(100) NOT NULL UNIQUE, 
     Plan_details TEXT NOT NULL,
@@ -88,7 +88,7 @@ Desc  learning_plan;
 
 -- Create Assessment table
 CREATE TABLE Assessment (
-    AID VARCHAR(10) PRIMARY KEY
+    AID VARCHAR(10) PRIMARY KEY,
     CONSTRAINT chk_assessmentID CHECK (AID LIKE 'A%'),
     Grade VARCHAR(2) NOT NULL,
     CONSTRAINT chk_grade CHECK (Grade IN ('A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'F')),
@@ -105,7 +105,7 @@ desc assessment;
 
 -- Create Accessibility_Request table
 CREATE TABLE Accessibility_Request (
-    RID VARCHAR(10) PRIMARY KEY
+    RID VARCHAR(10) PRIMARY KEY,
     CONSTRAINT chk_requestID CHECK (RID LIKE 'R%'),
     RequestType VARCHAR(100) NOT NULL,
     RequestStatus VARCHAR(50) NOT NULL DEFAULT 'Pending'
@@ -184,7 +184,6 @@ CREATE TABLE Assessment_Log (
     FOREIGN KEY (SubID) REFERENCES Subjects(SubID)
 );
 
-
 -- Trigger for the Assessment_Log
 DELIMITER //
 
@@ -207,14 +206,38 @@ BEGIN
 END;
 //
 
-
-
 CREATE TRIGGER trg_assessment_delete
 AFTER DELETE ON Assessment
 FOR EACH ROW
 BEGIN
     INSERT INTO Assessment_Log (AID, StID, TID, SubID, ActionType, PerformedBy)
     VALUES (OLD.AID, OLD.StID, OLD.TID, OLD.SubID, 'DELETE', USER());
+END;
+//
+
+-- Before triggers.
+-- Ensure Teacher's Email Domain is Institutional.
+DELIMITER //
+CREATE TRIGGER before_teacher_insert
+BEFORE INSERT ON Teacher
+FOR EACH ROW
+BEGIN
+    IF NEW.WorkEmail NOT LIKE '%@iac.ac' THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Teacher email must be an institutional email (@iac.iac)';
+    END IF;
+END;
+//
+--  Validate Phone Number Format (Guardians)
+DELIMITER //
+CREATE TRIGGER before_teacher_phone_insert
+BEFORE INSERT ON Teacher
+FOR EACH ROW
+BEGIN
+    IF NEW.PhoneNo NOT REGEXP '^[0-9]{10}$' THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Invalid phone number! Must be exactly 10 digits.';
+    END IF;
 END;
 //
 
@@ -387,21 +410,6 @@ DELIMITER ;
 
 
 
--- Before triggers.
--- Ensure Teacher's Email Domain is Institutional.
-
-DELIMITER //
-
-CREATE TRIGGER before_teacher_insert
-BEFORE INSERT ON Teacher
-FOR EACH ROW
-BEGIN
-    IF NEW.WorkEmail NOT LIKE '%@iac.ac' THEN
-        SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Teacher email must be an institutional email (@school.edu)';
-    END IF;
-END;
-//
 
 DELIMITER ;
 -- testing
@@ -412,19 +420,6 @@ INSERT INTO Teacher (TID, TName, T_Gender, Specialization, PhoneNo, WorkEmail) V
     ('T017', 'Atomixs alvin', 'M', 'hearing impairment', '0789109489', 'atomixs@gmail.ac');
 
 
--- 3. Validate Phone Number Format (Guardians)
-DELIMITER //
-
-CREATE TRIGGER before_teacher_phone_insert
-BEFORE INSERT ON Teacher
-FOR EACH ROW
-BEGIN
-    IF NEW.PhoneNo NOT REGEXP '^[0-9]{10}$' THEN
-        SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Invalid phone number! Must be exactly 10 digits.';
-    END IF;
-END;
-//
 DELIMITER ;
 INSERT INTO Teacher (TID, TName, T_Gender, Specialization, PhoneNo, WorkEmail) VALUES 
     ('T018', 'Kakembo alvin', 'M', 'intellectual impairment', '078910948', 'kakembo@iac.ac');
@@ -432,16 +427,14 @@ INSERT INTO Teacher (TID, TName, T_Gender, Specialization, PhoneNo, WorkEmail) V
 
 -- Views
 -- 1 Shows each student with their learning plan name, subject, and teacher assigned. (inner join)
-CREATE VIEW Student_Learning_Overview AS
-SELECT s.StID,s.StName,lp.P_Name AS LearningPlan,sub.SubjectName,t.TName AS Teacher
-FROM Student s
-JOIN Learning_plan lp ON s.PID = lp.PID
-JOIN Subjects sub ON lp.SubID = sub.SubID
-JOIN Teacher t ON lp.TID = t.TID;
-SELECT * FROM Student_Learning_Overview;
+CREATE VIEW Assessment_Report AS
+SELECT s.stName AS StName,sub.SubjectName,a.Grade,a.DateTaken,tName AS Assessed_By
+FROM  Assessment a JOIN Student s ON a.StID = s.StID
+JOIN  Subjects sub ON a.SubID = sub.SubID JOIN Teacher t ON a.TID = t.TID;
+
+SELECT * FROM assessment_report;
 
 -- 2 Show each teacher with their assigned subjects and their number of students assigned. (inner join)
-CREATE VIEW Teacher_Assigned_Subjects AS
 CREATE VIEW Assessment_Summary AS
 SELECT a.AID,s.StName,sub.SubjectName,a.Grade,a.DateTaken
 FROM Assessment a
