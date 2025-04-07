@@ -19,9 +19,6 @@ CREATE TABLE Teacher (
 );
 Desc Teacher;
 
-
-
-
 -- Create Guardian table
 CREATE TABLE Guardian (
     GID VARCHAR(10) PRIMARY KEY
@@ -36,8 +33,6 @@ CREATE TABLE Guardian (
     CONSTRAINT chk_guardian_email CHECK (Email REGEXP '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$')
 );
 Desc guardian;
-
-
 
 
 -- Create Student table
@@ -57,12 +52,6 @@ CREATE TABLE Student (
    
 );
 Desc student;
-
-
-ALTER TABLE Student
-ADD CONSTRAINT fk_student_learning_plan
-FOREIGN KEY (PID) REFERENCES Learning_plan(PID);
-
 
 
 -- Create Subjects table
@@ -132,8 +121,53 @@ CREATE TABLE Accessibility_Request (
 Desc accessibility_request;
 
 -- Logs
+--  Teacher logs:
+CREATE TABLE Teacher_Log (
+    Log_ID INT AUTO_INCREMENT PRIMARY KEY,
+    TID VARCHAR(10),
+    TName VARCHAR(100),
+    ActionType VARCHAR(50) NOT NULL,
+    constraint chk_Teacher_actiontype check (ActionType in ('INSERT', 'UPDATE', 'DELETE')),
+    ActionTimes TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    performedBy VARCHAR(100) NOT NULL,
+    FOREIGN KEY (TID) REFERENCES Teacher(TID)
+);
+-- Trigger for Teacher logs.
+DELIMITER //
+
+CREATE TRIGGER trg_teacher_log
+AFTER INSERT ON Teacher
+FOR EACH ROW
+BEGIN
+    INSERT INTO Teacher_Log (TID, TName, ActionType, PerformedBy)
+    VALUES (NEW.TID, NEW.TName, 'INSERT', USER());
+END;
+//
+
+
+DELIMITER //
+CREATE TRIGGER trg_teacher_update
+AFTER UPDATE ON Teacher
+FOR EACH ROW
+BEGIN
+    INSERT INTO Teacher_Log (TID, TName, ActionType, PerformedBy)
+    VALUES ( 'UPDATE', USER());
+END;
+//
+
+
+DELIMITER //
+CREATE TRIGGER trg_teacher_update
+AFTER DELETE ON Teacher
+FOR EACH ROW
+BEGIN
+    INSERT INTO Teacher_Log (TID, TName, ActionType, PerformedBy)
+    VALUES ( 'DELETE', USER());
+END;
+//
 
 -- Assessment Logs:
+DELIMITER ;
 CREATE TABLE Assessment_Log (
     LID INT(10)  AUTO_INCREMENT PRIMARY KEY,
     AID VARCHAR(10) NOT NULL,
@@ -163,12 +197,6 @@ BEGIN
 END;
 //
 
-DELIMITER ;
---  Testing the above trigger.
-INSERT INTO Assessment (AID, Grade, Remark, DateTaken, StID, TID, SubID) VALUES
-    ('A022', 'A', 'Needs more practice', '2025-02-21 11:00:00', 'S020','T005','Sub005');
-
-
 DELIMITER //
 CREATE TRIGGER trg_assessment_update
 AFTER UPDATE ON Assessment
@@ -178,11 +206,7 @@ BEGIN
     VALUES (NEW.AID, NEW.StID, NEW.TID, NEW.SubID, 'UPDATE', USER());
 END;
 //
-DELIMITER ;
 
--- Testing the above trigger trg_assessment_update .
-UPDATE Assessment SET Grade = 'A+' WHERE AID = 'A023';
-    
 
 
 CREATE TRIGGER trg_assessment_delete
@@ -193,11 +217,6 @@ BEGIN
     VALUES (OLD.AID, OLD.StID, OLD.TID, OLD.SubID, 'DELETE', USER());
 END;
 //
-
-DELIMITER ;
--- Testing the above trigger trg_assessment_delete .
- DELETE FROM Assessment WHERE AID = 'A023';
-
 
 --  inserting data
 -- Teacher Table
@@ -351,10 +370,19 @@ INSERT INTO Assessment (AID, Grade, Remark, DateTaken, StID, TID, SubID) VALUES
 ('A020', 'B-', 'Needs improvement', '2025-02-20 11:00:00', 'S020','T005', 'Sub005');
 select* from assessment;
 
+DELIMITER ;
+--  Testing the assessment_log trigger.
+INSERT INTO Assessment (AID, Grade, Remark, DateTaken, StID, TID, SubID) VALUES
+    ('A022', 'A', 'Needs more practice', '2025-02-21 11:00:00', 'S020','T005','Sub005');
 
+DELIMITER ;
 
-Drop TABLE assessment_log;
-
+-- Testing the above trigger trg_assessment_update .
+UPDATE Assessment SET Grade = 'A+' WHERE AID = 'A023';
+    
+DELIMITER ;
+-- Testing the above trigger trg_assessment_delete .
+ DELETE FROM Assessment WHERE AID = 'A023';
 
 
 
@@ -384,12 +412,7 @@ INSERT INTO Teacher (TID, TName, T_Gender, Specialization, PhoneNo, WorkEmail) V
     ('T017', 'Atomixs alvin', 'M', 'hearing impairment', '0789109489', 'atomixs@gmail.ac');
 
 
-
-
-
-
 -- 3. Validate Phone Number Format (Guardians)
-
 DELIMITER //
 
 CREATE TRIGGER before_teacher_phone_insert
