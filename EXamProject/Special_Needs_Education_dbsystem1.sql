@@ -396,12 +396,12 @@ select* from assessment;
 DELIMITER ;
 --  Testing the assessment_log trigger.
 INSERT INTO Assessment (AID, Grade, Remark, DateTaken, StID, TID, SubID) VALUES
-    ('A022', 'A', 'Needs more practice', '2025-02-21 11:00:00', 'S020','T005','Sub005');
+    ('A021', 'A+', 'Outstanding', '2025-02-21 11:00:00', 'S020','T005','Sub005');
 
 DELIMITER ;
 
 -- Testing the above trigger trg_assessment_update .
-UPDATE Assessment SET Grade = 'A+' WHERE AID = 'A023';
+UPDATE Assessment SET Grade = 'A+' WHERE AID = 'A015';
     
 DELIMITER ;
 -- Testing the above trigger trg_assessment_delete .
@@ -426,7 +426,7 @@ INSERT INTO Teacher (TID, TName, T_Gender, Specialization, PhoneNo, WorkEmail) V
 
 
 -- Views
--- 1 Shows each student with their learning plan name, subject, and teacher assigned. (inner join)
+-- 1 Assessment report.
 CREATE VIEW Assessment_Report AS
 SELECT s.stName AS StName,sub.SubjectName,a.Grade,a.DateTaken,tName AS Assessed_By
 FROM  Assessment a JOIN Student s ON a.StID = s.StID
@@ -472,6 +472,75 @@ UNION
 SELECT s.StID, s.StName, a.AID, a.Grade, a.DateTaken
 FROM Assessment a RIGHT JOIN Student s ON s.StID = a.StID;
 select * from student_assessment_fullview;
+
+-- Stored Procedures.
+
+-- Procedure that Retrieves all pending accessibility requests
+DELIMITER /
+CREATE PROCEDURE GetPendingRequests()
+BEGIN
+    SELECT ar.RID, ar.RequestType, ar.StID, s.StName AS StudentName, ar.TID, ar.SubID, ar.SubmissionDate
+    FROM Accessibility_Request ar
+    JOIN Student s ON ar.StID = s.StID
+    WHERE ar.RequestStatus = 'Pending';
+END /
+DELIMITER ;
+
+-- Update Guadians's Phone number.
+DELIMITER /
+CREATE PROCEDURE UpdateGuardianPhone(IN g_GID VARCHAR(10), IN g_NewPhoneNo VARCHAR(10))
+BEGIN
+    UPDATE Guardian
+    SET PhoneNo = g_NewPhoneNo
+    WHERE GID = g_GID;
+END /
+DELIMITER ;
+
+-- Recored Assessments.
+DELIMITER /
+CREATE PROCEDURE RecordAssessment(
+    IN p_AID VARCHAR(10), IN p_Grade VARCHAR(2), IN p_Remark TEXT, IN p_SubmissionDate DATETIME,
+    IN p_StID VARCHAR(10), IN p_TID VARCHAR(10), IN p_SubID VARCHAR(10)
+)
+BEGIN
+    INSERT INTO Assessment (AID, Grade, Remark, StID, TID, SubID)
+    VALUES (p_AID, p_Grade, p_Remark, p_StID, p_TID, p_SubID);
+END /
+DELIMITER ;
+
+-- CountStudentsByTeacher
+DELIMITER /
+CREATE PROCEDURE CountStudentsByTeacher(IN p_TID VARCHAR(10))
+BEGIN
+    SELECT COUNT(*) AS StudentCount
+    FROM Student
+    WHERE TID = p_TID;
+END /
+DELIMITER ;
+
+--   Deletes a specific learning plan by its ID.
+DELIMITER /
+CREATE PROCEDURE DeleteLearningPlan(IN p_PID VARCHAR(10))
+BEGIN
+    DELETE FROM Learning_plan
+    WHERE PID = p_PID;
+END /
+DELIMITER ;
+
+
+-- call the procedures
+call GetPendingRequests();
+CALL UpdateGuardianPhone('G001', '0789109489');
+CALL RecordAssessment('A023', 'A', 'Excellent Progress', '2025-02-12 11:00:00', 'S012', 'T012', 'Sub012');
+CALL CountStudentsByTeacher('T005');
+CALL DeleteLearningPlan('P001');
+
+
+show triggers;
+
+
+
+
 
 
 drop database Special_Needs_Education_dbsystem; 
