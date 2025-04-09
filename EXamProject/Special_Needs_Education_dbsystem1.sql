@@ -536,6 +536,32 @@ CALL CountStudentsByTeacher('T005');
 CALL DeleteLearningPlan('P001');
 
 
+-- Creating User acounts and the roles
+SELECT User, Host FROM mysql.user;
+
+
+
+-- Create the role
+CREATE ROLE 'AdminRole';
+
+-- Grant privileges to the role
+GRANT ALL PRIVILEGES ON Special_Needs_Education_dbsystem.* TO 'AdminRole';
+
+-- Optionally assign the role to a user (e.g., 'Admin'@'%')
+CREATE USER 'Admin'@'localhost' IDENTIFIED BY 'Admin';
+
+GRANT 'AdminRole' TO 'Admin'@'localhost';
+
+-- Verify grants
+
+
+SHOW GRANTS FOR 'Admin'@'localhost';
+SHOW GRANTS FOR 'Teacher'@'localhost';
+SHOW GRANTS FOR 'Guardian'@'localhost';
+
+SELECT CURRENT_USER();
+
+
 show triggers;
 
 

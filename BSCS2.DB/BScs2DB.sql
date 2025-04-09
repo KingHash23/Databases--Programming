@@ -379,7 +379,7 @@ GRANT UPDATE(salary) ON bscs2.employee TO 'James'@'localhost';
  
 -- PS C:\Program Files (x86)\mysql> cd My SQLserver 8.0 
 -- Set-Location : A positional parameter cannot be found that accepts argument 'SQLserver'.
--- At line:1 char:1
+-- At line:1 char:1exit
 -- + cd My SQLserver 8.0
 -- + ~~~~~~~~~~~~~~~~~~~
 --     + CategoryInfo          : InvalidArgument: (:) [Set-Location], ParameterBindingException
@@ -646,7 +646,7 @@ GRANT UPDATE(salary) ON bscs2.employee TO 'James'@'localhost';
 -- ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '';
 -- exit
 -- exit;
--- grant select , insert on bscs2.*to 'demo'@localhost'' at line 1
+-- grant select , insert on bscs2.*to 'demo'@localhost'' at line 1.
 -- mysql> grant select , insert on BSCS2.* 'demo'@'localhost'; 
 -- ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''demo'@'localhost'' at line 1
 -- mysql> grant select , insert on bscs2.* 'demo'@'localhost';
