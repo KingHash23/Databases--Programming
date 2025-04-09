@@ -120,6 +120,7 @@ CREATE TABLE Accessibility_Request (
 );
 Desc accessibility_request;
 
+
 -- Logs
 --  Teacher logs:
 CREATE TABLE Teacher_Log (
