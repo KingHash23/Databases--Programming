@@ -132,7 +132,9 @@ CREATE TABLE Teacher_Log (
     ActionTimes TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     performedBy VARCHAR(100) NOT NULL,
     FOREIGN KEY (TID) REFERENCES Teacher(TID)
-);
+); 
+
+
 -- Trigger for Teacher logs.
 DELIMITER //
 
