@@ -491,7 +491,7 @@ FROM Assessment a RIGHT JOIN Student s ON s.StID = a.StID;
 select * from student_assessment_fullview;
 
 -- select statements
-SELECT * FROM Assessment_Report;
+
 -- List all students with a pending accessibility request:
 SELECT StName
 FROM Student s
