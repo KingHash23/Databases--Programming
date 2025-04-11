@@ -108,7 +108,7 @@ CREATE TABLE Accessibility_Request (
     RID VARCHAR(10) PRIMARY KEY,
     CONSTRAINT chk_requestID CHECK (RID LIKE 'R%'),
     RequestType VARCHAR(100) NOT NULL,
-    RequestStatus VARCHAR(50) NOT NULL DEFAULT 'Pending'
+    RequestStatus VARCHAR(50) NOT NULL DEFAULT 'Pending',
     CONSTRAINT chk_request_status CHECK (RequestStatus IN ('Pending', 'Approved', 'Denied')),
     SubmissionDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     StID VARCHAR(10) NOT NULL,
@@ -154,18 +154,19 @@ AFTER UPDATE ON Teacher
 FOR EACH ROW
 BEGIN
     INSERT INTO Teacher_Log (TID, TName, ActionType, PerformedBy)
-    VALUES ( 'UPDATE', USER());
+    VALUES (NEW.TID, NEW.TName, 'UPDATE', USER());
+
 END;
 //
-
+drop Trigger trg_teacher_update;
 
 DELIMITER //
-CREATE TRIGGER trg_teacher_update
+CREATE TRIGGER trg_teacher_delete
 AFTER DELETE ON Teacher
 FOR EACH ROW
 BEGIN
     INSERT INTO Teacher_Log (TID, TName, ActionType, PerformedBy)
-    VALUES ( 'DELETE', USER());
+    VALUES (OLD.TID, OLD.TName, 'DELETE', USER());
 END;
 //
 
