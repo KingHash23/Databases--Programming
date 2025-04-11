@@ -307,7 +307,7 @@ INSERT INTO Student (StID, StName, DOB, St_Gender, Disability_Type, GID, TID) VA
     ('S018', 'Felicia Nadia', '2012-09-10', 'F', 'intellectual impairment', 'G010','T008'),
     ('S019', 'Kamau Kemba', '2010-04-25', 'M', 'Autism', 'G001','T014'),
     ('S020', 'Somu Amara', '2013-02-28', 'F', 'Dyslexia', 'G001','T005');
-    select*FROM student;
+select*FROM student;
 
 
 -- subjects
@@ -478,6 +478,7 @@ FROM Assessment a RIGHT JOIN Student s ON s.StID = a.StID;
 select * from student_assessment_fullview;
 
 -- select statements
+SELECT * FROM Assessment_Report;
 -- List all students with a pending accessibility request:
 SELECT StName
 FROM Student s
@@ -558,25 +559,27 @@ CALL DeleteLearningPlan('P001');
 -- Creating User acounts and the roles
 SELECT User, Host FROM mysql.user;
 
+--  do this in the terminal
 
--- Create the users
-CREATE USER 'Admin'@'localhost' IDENTIFIED BY 'Admin';
-CREATE USER 'Teacher'@'localhost' IDENTIFIED BY 'Teacher';
-CREATE USER 'Guardian'@'localhost' IDENTIFIED BY 'Guardian';
--- Create the role
-CREATE ROLE 'AdminRole';
+-- -- Create the users
+-- CREATE USER 'Admin'@'localhost' IDENTIFIED BY 'Admin';
+-- CREATE USER 'Teacher'@'localhost' IDENTIFIED BY 'Teacher';
+-- CREATE USER 'Guardian'@'localhost' IDENTIFIED BY 'Guardian';
+-- -- Create the role
+-- CREATE ROLE 'AdminRole';
 
--- Grant privileges to the role
-GRANT ALL PRIVILEGES ON Special_Needs_Education_dbsystem.* TO 'Admin_Role';
-GRANT SELECT,INSERT, UPDATE, DELETE ON Special_Needs_Education_dbsystem.* TO 'Teacher_Role';
-GRANT SELECT ON Special_Needs_Education_dbsystem.* TO 'Guardian_Role';
+-- -- Grant privileges to the role
+-- GRANT ALL PRIVILEGES ON Special_Needs_Education_dbsystem.* TO 'Admin_Role';
+-- GRANT SELECT,INSERT, UPDATE, DELETE ON Special_Needs_Education_dbsystem.* TO 'Teacher_Role';
+-- GRANT SELECT ON Special_Needs_Education_dbsystem.* TO 'Guardian_Role';
 
 
--- assigning the roles to  users
+-- -- assigning the roles to  users
 
-GRANT 'Admin_Role' TO 'Admin'@'localhost';
-GRANT 'Teacher' TO 'Teacher_Role';
-GRANT 'Guardian_Role' TO 'Guardian'@'localhost';
+-- GRANT 'Admin_Role' TO 'Admin'@'localhost';
+-- GRANT 'Teacher' TO 'Teacher_Role';
+-- GRANT 'Guardian_Role' TO 'Guardian'@'localhost';
+
 
 -- Verify grants
 
@@ -591,4 +594,5 @@ show triggers;
 
 
 drop database Special_Needs_Education_dbsystem; 
+
 
