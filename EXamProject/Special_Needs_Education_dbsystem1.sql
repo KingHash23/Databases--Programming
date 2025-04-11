@@ -543,20 +543,26 @@ CALL DeleteLearningPlan('P001');
 SELECT User, Host FROM mysql.user;
 
 
-
+-- Create the users
+CREATE USER 'Admin'@'localhost' IDENTIFIED BY 'Admin';
+CREATE USER 'Teacher'@'localhost' IDENTIFIED BY 'Teacher';
+CREATE USER 'Guardian'@'localhost' IDENTIFIED BY 'Guardian';
 -- Create the role
 CREATE ROLE 'AdminRole';
 
 -- Grant privileges to the role
-GRANT ALL PRIVILEGES ON Special_Needs_Education_dbsystem.* TO 'AdminRole';
+GRANT ALL PRIVILEGES ON Special_Needs_Education_dbsystem.* TO 'Admin_Role';
+GRANT SELECT,INSERT, UPDATE, DELETE ON Special_Needs_Education_dbsystem.* TO 'Teacher_Role';
+GRANT SELECT ON Special_Needs_Education_dbsystem.* TO 'Guardian_Role';
 
--- Optionally assign the role to a user (e.g., 'Admin'@'%')
-CREATE USER 'Admin'@'localhost' IDENTIFIED BY 'Admin';
 
-GRANT 'AdminRole' TO 'Admin'@'localhost';
+-- assigning the roles to  users
+
+GRANT 'Admin_Role' TO 'Admin'@'localhost';
+GRANT 'Teacher' TO 'Teacher_Role';
+GRANT 'Guardian_Role' TO 'Guardian'@'localhost';
 
 -- Verify grants
-
 
 SHOW GRANTS FOR 'Admin'@'localhost';
 SHOW GRANTS FOR 'Teacher'@'localhost';
@@ -566,10 +572,6 @@ SELECT CURRENT_USER();
 
 
 show triggers;
-
-
-
-
 
 
 drop database Special_Needs_Education_dbsystem; 
