@@ -505,6 +505,17 @@ JOIN Student s ON lp.StID = s.StID
 JOIN Subjects sub ON lp.SubID = sub.SubID
 WHERE s.StID = 'S005';
 
+-- Teacher Activity Log
+SELECT Teacher_Log.Log_ID,Teacher_Log.TID,Teacher.TName,Teacher_Log.ActionType,Teacher_Log.ActionTimes
+FROM Teacher_Log
+JOIN Teacher ON Teacher_Log.TID = Teacher.TID
+ORDER BY ActionTimes DESC;
+
+-- Learning Plans per Student
+SELECT LP.PID,S.StName,T.TName,LP.P_Name
+FROM Learning_plan LP
+JOIN Student S ON LP.StID = S.StID
+JOIN Teacher T ON LP.TID = T.TID;
 
 -- Stored Procedures.
 
