@@ -477,6 +477,21 @@ SELECT s.StID, s.StName, a.AID, a.Grade, a.DateTaken
 FROM Assessment a RIGHT JOIN Student s ON s.StID = a.StID;
 select * from student_assessment_fullview;
 
+-- select statements
+-- List all students with a pending accessibility request:
+SELECT StName
+FROM Student s
+JOIN Accessibility_Request ar ON s.StID = ar.StID
+WHERE ar.RequestStatus = 'Pending';
+
+-- Learning plans for a specific student
+SELECT s.StName, sub.SubjectName, lp.P_Name
+FROM Learning_Plan lp
+JOIN Student s ON lp.StID = s.StID
+JOIN Subjects sub ON lp.SubID = sub.SubID
+WHERE s.StID = 'S005';
+
+
 -- Stored Procedures.
 
 -- Procedure that Retrieves all pending accessibility requests
@@ -576,3 +591,4 @@ show triggers;
 
 
 drop database Special_Needs_Education_dbsystem; 
+
