@@ -228,10 +228,11 @@ FOR EACH ROW
 BEGIN
     IF NEW.WorkEmail NOT LIKE '%@iac.ac' THEN
         SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Teacher email must be an institutional email (@iac.iac)';
+        SET MESSAGE_TEXT = 'Teacher email must be an institutional email (@iac.ac)';
     END IF;
 END;
 //
+
 --  Validate Phone Number Format (Guardians)
 DELIMITER //
 CREATE TRIGGER before_teacher_phone_insert
@@ -244,6 +245,18 @@ BEGIN
     END IF;
 END;
 //
+DELIMITER;
+DELIMITER//
+CREATE Trigger before_dob_data
+BEFORE INSERT ON Student
+FOR EACH ROW
+BEGIN
+      IF NEW.DOB > CURDATE() THEN
+  SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'DOB cannot be in the future.';
+END IF;
+END;
+//
+DELIMITER;
 
 --  inserting data
 -- Teacher Table
