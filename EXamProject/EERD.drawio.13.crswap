@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36" version="26.2.12">
   <diagram name="Page-1" id="TsTMwgAtQ4LRlQeALab_">
-    <mxGraphModel dx="1626" dy="636" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="3533" dy="1453" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -102,9 +102,7 @@
             <mxPoint x="-362" y="196" as="sourcePoint" />
             <mxPoint x="-262" y="96" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-606" y="59" />
-              <mxPoint x="-619" y="-2" />
-              <mxPoint x="-660" y="55" />
+              <mxPoint x="-745" y="80" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -145,7 +143,7 @@
           <mxGeometry x="-402" y="272" width="40" height="31" as="geometry" />
         </mxCell>
         <mxCell id="dXWMB5hK-Hz6XOAHekRW-68" value="1:M" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
-          <mxGeometry x="14" y="201" width="160" as="geometry" />
+          <mxGeometry x="5" y="199" width="160" as="geometry" />
         </mxCell>
         <mxCell id="dXWMB5hK-Hz6XOAHekRW-69" value="1:M" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="-20" y="290" width="160" as="geometry" />
@@ -175,7 +173,10 @@
             <Array as="points">
               <mxPoint x="-395" y="293" />
               <mxPoint x="-480" y="293" />
-              <mxPoint x="-480" y="156" />
+              <mxPoint x="-480" y="147" />
+              <mxPoint x="-400" y="147" />
+              <mxPoint x="-400" y="156" />
+              <mxPoint x="-428" y="156" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -186,7 +187,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="n2Q5zq3-epFg14mdu5Ma-2" value="Teacher_log" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-813" y="-240" width="160" height="172" as="geometry" />
+          <mxGeometry x="-942" y="-355" width="160" height="172" as="geometry" />
         </mxCell>
         <mxCell id="n2Q5zq3-epFg14mdu5Ma-3" value="PK&amp;nbsp; Log_ID&lt;br&gt;FK&amp;nbsp; &amp;nbsp;TID&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;Tname&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;ActionType&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;ActionTimes&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;perfromed_by&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="n2Q5zq3-epFg14mdu5Ma-2">
           <mxGeometry y="50" width="160" height="122" as="geometry" />
@@ -195,18 +196,10 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="1" y="-110" as="sourcePoint" />
             <mxPoint x="51" y="-160" as="targetPoint" />
-            <Array as="points">
-              <mxPoint x="-653" y="-221" />
-              <mxPoint x="-626" y="-221" />
-              <mxPoint x="-626" y="-285" />
-              <mxPoint x="-321" y="-285" />
-              <mxPoint x="-321" y="-305" />
-              <mxPoint x="-194" y="-305" />
-            </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="n2Q5zq3-epFg14mdu5Ma-7" value="Teacher_log" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="414" y="168" width="160" height="182" as="geometry" />
+          <mxGeometry x="534" y="152" width="160" height="182" as="geometry" />
         </mxCell>
         <mxCell id="n2Q5zq3-epFg14mdu5Ma-8" value="PK&amp;nbsp; LID&lt;br&gt;FK&amp;nbsp; AID&lt;div&gt;FK&amp;nbsp; StID&lt;/div&gt;&lt;div&gt;FK&amp;nbsp; TID&lt;/div&gt;&lt;div&gt;FK&amp;nbsp; SubID&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;ActionType&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;ActionsTIme&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; Performed by&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;br&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp; &amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="n2Q5zq3-epFg14mdu5Ma-7">
           <mxGeometry y="50" width="160" height="122" as="geometry" />
@@ -214,41 +207,11 @@
         <mxCell id="n2Q5zq3-epFg14mdu5Ma-10" value="&lt;div&gt;&lt;div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="n2Q5zq3-epFg14mdu5Ma-7">
           <mxGeometry y="172" width="160" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="n2Q5zq3-epFg14mdu5Ma-13" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;exitX=1;exitY=0.75;exitDx=0;exitDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="dXWMB5hK-Hz6XOAHekRW-29" target="n2Q5zq3-epFg14mdu5Ma-8">
+        <mxCell id="n2Q5zq3-epFg14mdu5Ma-13" value="" style="endArrow=none;dashed=1;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" source="dXWMB5hK-Hz6XOAHekRW-29">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="201" y="565" as="sourcePoint" />
             <mxPoint x="251" y="515" as="targetPoint" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="n2Q5zq3-epFg14mdu5Ma-14" value="Assigned to" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-24" y="-154.5" width="60" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="n2Q5zq3-epFg14mdu5Ma-15" value="has" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="90" y="-74" width="60" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="n2Q5zq3-epFg14mdu5Ma-16" value="Evaluates" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="144" y="-296.5" width="60" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="n2Q5zq3-epFg14mdu5Ma-17" value="can do" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="67" y="230" width="60" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="n2Q5zq3-epFg14mdu5Ma-20" value="has" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-161" y="383" width="60" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="n2Q5zq3-epFg14mdu5Ma-21" value="has" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-229" y="192" width="60" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="n2Q5zq3-epFg14mdu5Ma-22" value="submits" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-402" y="-190" width="60" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="n2Q5zq3-epFg14mdu5Ma-23" value="Creates" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-201" y="-52" width="60" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="n2Q5zq3-epFg14mdu5Ma-24" value="Teach" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-653" y="67" width="60" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="n2Q5zq3-epFg14mdu5Ma-25" value="Has" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-523" y="200" width="60" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
