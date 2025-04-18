@@ -451,7 +451,7 @@ JOIN  Subjects sub ON a.SubID = sub.SubID JOIN Teacher t ON a.TID = t.TID;
 
 SELECT * FROM assessment_report;
 
--- 2 Show each teacher with their assigned subjects and their number of students assigned. (inner join)
+-- 2 Shows each teacher with their assigned subjects and their number of students assigned. (inner join)
 CREATE VIEW Assessment_Summary AS
 SELECT a.AID,s.StName,sub.SubjectName,a.Grade,a.DateTaken
 FROM Assessment a
@@ -589,8 +589,11 @@ SELECT User, Host FROM mysql.user;
 -- CREATE USER 'Admin'@'localhost' IDENTIFIED BY 'Admin';
 -- CREATE USER 'Teacher'@'localhost' IDENTIFIED BY 'Teacher';
 -- CREATE USER 'Guardian'@'localhost' IDENTIFIED BY 'Guardian';
+
 -- -- Create the role
--- CREATE ROLE 'AdminRole';
+-- CREATE ROLE 'Admin_Role';
+-- CREATE ROLE 'Teacher_Role';
+-- CREATE ROLE 'Guardian_Role';
 
 -- -- Grant privileges to the role
 -- GRANT ALL PRIVILEGES ON Special_Needs_Education_dbsystem.* TO 'Admin_Role';
@@ -615,8 +618,15 @@ SELECT CURRENT_USER();
 
 
 show triggers;
+show PROCEDURES;
+
+drop database Special_Needs_Education_dbsystem;
 
 
-drop database Special_Needs_Education_dbsystem; 
+
+
+SELECT TABLE_NAME, TABLE_TYPE
+FROM information_schema.tables
+WHERE table_schema = 'Special_Needs_Education_dbsystem';
 
 
